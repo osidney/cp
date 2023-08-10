@@ -1,0 +1,336 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    kernel.default_locale: 'pt_BR'
+    locales:
+        ar: 'Arabic'
+        bg: 'Bulgarian'
+        zh_HANS: 'Chinese (Simplified)'
+        zh_TW: 'Chinese (Taiwan)'
+        en: 'English'
+        fr: 'French'
+        de: 'German'
+        nl: 'Dutch'
+        gr: 'Greek'
+        he: 'Hebrew'
+        lt: 'Lithuanian'
+        id: 'Indonesian'
+        it: 'Italian'
+        ja_JP: 'Japanese'
+        es: 'Spanish'
+        pl: 'Polish'
+        pt_BR: 'Portuguese (Brasil)'
+        ro: 'Romanian'
+        ru: 'Russian'
+        tr: 'Turkish'
+        uk: 'Ukrainian'
+        vi: 'Vietnamese'
+    app_version: '%env(APP_VERSION)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    App\Asset\VersionStrategy:
+        arguments: [ '%%s?v=%%s' ]
+
+    App\Service\Logger:
+        arguments: ['@request_stack', '@logger']
+        public: true
+
+    app.logger:
+        alias: App\Service\Logger
+        public: true
+
+    App\Security\UserProvider:
+        public: true
+
+    App\Site\Parser\DomainName:
+        public: true
+
+    App\Command\SiteAddPhpCommand:
+        public: true
+
+    App\Command\SiteAddPythonCommand:
+        public: true
+
+    App\Command\SiteAddReverseProxyCommand:
+        public: true
+
+    App\Command\SiteAddNodejsCommand:
+        public: true
+
+    App\Command\SiteAddStaticCommand:
+      public: true
+
+    App\Command\SiteDeleteCommand:
+        public: true
+
+    App\Command\SiteInstallCertificateCommand:
+        public: true
+
+    App\Command\UserAddCommand:
+        public: true
+
+    App\Command\UserDeleteCommand:
+        public: true
+
+    App\Command\UserListCommand:
+        public: true
+
+    App\Command\UserResetPasswordCommand:
+        public: true
+
+    App\Command\UserDisableMfaCommand:
+        public: true
+
+    App\Command\CloudPanelEnableBasicAuthCommand:
+        public: true
+
+    App\Command\CloudPanelDisableBasicAuthCommand:
+        public: true
+
+    App\Command\CloudPanelSetReleaseChannelCommand:
+        public: true
+
+    App\Command\DatabaseShowMasterCredentialsCommand:
+        public: true
+
+    App\Command\LetsEncryptRenewCertificatesCommand:
+        public: true
+
+    App\Command\LetsEncryptInstallCertificateCommand:
+        public: true
+
+    App\Command\LetsEncryptRenewCustomDomainCertificateCommand:
+        public: true
+
+    App\Command\DatabaseAddCommand:
+        public: true
+
+    App\Command\DatabaseDeleteCommand:
+        public: true
+
+    App\Command\DatabaseBackupCommand:
+        public: true
+
+    App\Command\DatabaseExportCommand:
+        public: true
+
+    App\Command\DatabaseImportCommand:
+        public: true
+
+    App\Command\AnnouncementCheckCommand:
+        public: true
+
+    App\Command\AwsImageCreateCommand:
+        public: true
+
+    App\Command\DoSnapshotCreateCommand:
+        public: true
+
+    App\Command\GceSnapshotCreateCommand:
+        public: true
+
+    App\Command\VultrSnapshotCreateCommand:
+        public: true
+
+    App\Command\HetznerSnapshotCreateCommand:
+        public: true
+
+    App\Command\AppGetConfigValueCommand:
+        public: true
+
+    App\Command\AppSetConfigValueCommand:
+        public: true
+
+    App\Command\VhostTemplatesImportCommand:
+        public: true
+
+    App\Command\VhostTemplatesListCommand:
+        public: true
+
+    App\Command\CloudflareUpdateIpsCommand:
+        public: true
+
+    App\Command\TestCommand:
+        public: true
+
+    App\Command\CloudPanelDeleteSitesCommand:
+        public: true
+
+    App\Command\SystemPermissionsResetCommand:
+        public: true
+
+    App\Command\VhostTemplateAddCommand:
+        public: true
+
+    App\Command\VhostTemplateDeleteCommand:
+        public: true
+
+    App\Command\VhostTemplateViewCommand:
+        public: true
+
+    App\Command\MonitoringDataCleanCommand:
+        public: true
+
+    App\Command\RemoteBackupCreateCommand:
+        public: true
+
+    App\Command\VarnishCachePurgeCommand:
+        public: true
+
+    App\Entity\Manager\UserManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\User, '@security.password_hasher_factory']
+        public: true
+
+    App\Entity\Manager\TimezoneManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Timezone]
+        public: true
+
+    App\Entity\Manager\EventManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Event]
+        public: true
+
+    App\Entity\Manager\NotificationManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Notification]
+        public: true
+
+    App\Entity\Manager\AnnouncementManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Announcement]
+        public: true
+
+    App\Entity\Manager\FirewallRuleManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\FirewallRule]
+        public: true
+
+    App\Entity\Manager\ConfigManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Config]
+        public: true
+
+    App\Entity\Manager\DatabaseServerManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\DatabaseServer]
+        public: true
+
+    App\Entity\Manager\DatabaseManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Database]
+        public: true
+
+    App\Entity\Manager\DatabaseUserManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\DatabaseUser]
+        public: true
+
+    App\Entity\Manager\SiteManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Site]
+        public: true
+
+    App\Entity\Manager\CertificateManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\Certificate]
+        public: true
+
+    App\Entity\Manager\NodejsSettingsManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\NodejsSettings]
+        public: true
+
+    App\Entity\Manager\PhpSettingsManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\PhpSettings]
+        public: true
+
+    App\Entity\Manager\PythonManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\PythonSettings]
+        public: true
+
+    App\Entity\Manager\VhostTemplateManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\VhostTemplate]
+        public: true
+
+    App\Entity\Manager\BlockedIpManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\BlockedIp]
+        public: true
+
+    App\Entity\Manager\BlockedBotManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\BlockedBot]
+        public: true
+
+    App\Entity\Manager\BasicAuthManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\BasicAuth]
+        public: true
+
+    App\Entity\Manager\SshUserManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\SshUser]
+        public: true
+
+    App\Entity\Manager\FtpUserManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\FtpUser]
+        public: true
+
+    App\Entity\Manager\CronJobManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\CronJob]
+        public: true
+
+    App\Entity\Manager\InstanceCpuManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\InstanceCpu]
+        public: true
+
+    App\Entity\Manager\InstanceDiskUsageManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\InstanceDiskUsage]
+        public: true
+
+    App\Entity\Manager\InstanceLoadAverageManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\InstanceLoadAverage]
+        public: true
+
+    App\Entity\Manager\InstanceMemoryManager:
+        arguments: ['@doctrine.orm.entity_manager', App\Entity\InstanceMemory]
+        public: true
+
+    App\EventListener\RequestListener:
+        arguments: ['@router', '@App\Entity\Manager\UserManager']
+        tags:
+            - { name: kernel.event_subscriber }
+
+    App\EventListener\ExceptionListener:
+        arguments: ['@router']
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\EventListener\LoginListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login' }
+
+    App\EventListener\EventListener:
+        tags:
+            - { name: 'kernel.event_subscriber', event: 'kernel.terminate' }
+
+    App\EventListener\NotificationsListener:
+        tags:
+            - { name: 'kernel.event_subscriber', event: 'kernel.terminate' }
+
+    App\EventListener\LocaleListener:
+        arguments: ['%locales%', '%kernel.default_locale%']
+        tags:
+            - { name: kernel.event_subscriber }
+
+    App\EventListener\DoctrinePostConnectListener:
+        tags:
+            - { name: doctrine.event_listener, event: postConnect }
+
+    App\Twig\AppExtension:
+        public: false
+        tags:
+            - { name: twig.extension }
